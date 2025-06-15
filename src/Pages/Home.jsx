@@ -1,20 +1,21 @@
 import React, { useEffect } from 'react'
-import { Categories, mockData } from '../assets/mockData'
+import { Categories } from '../assets/mockData'
 import HeroImage from "../assets/Images/main-hero.avif"
 import InfoSection from '../Components/InfoSection'
 import CategorySection from '../Components/CategorySection'
-import { setProducts } from '../Redux/productSlice'
+import { fetchProducts } from '../Redux/productSlice'
 import { useDispatch, useSelector } from 'react-redux'
 import ProductCard from '../Components/ProductCard'
 import Shop from './Shop'
+import useFetch from '../hooks/useFetch'
 
 const Home = () => {
   const dispatch = useDispatch();
-  const products = useSelector (state => state.product)
+  const { data: products, loading, error } = useFetch("https://fakestoreapi.com/products/");
 
   useEffect(()=>{
-    dispatch(setProducts(mockData))
-  }, [])
+    dispatch(fetchProducts())
+  }, [dispatch])
 
   return (
     <div>
@@ -49,10 +50,11 @@ const Home = () => {
         <div className='container mx-auto py-12'>
           <h2 className='text-2xl font-bold mb-6 text-center'>Top Products</h2>
           <div className='grid grid-cols-11 sm:grid-cole-2 md:grid-cols-4 lg:grid-cols-5 gap-6 cursor-pointer'>
-            {products.products.slice(0,5).map(((product)=>(
-                <ProductCard product={product}/>
-            
-            ))) }
+            {loading && <p>Loading...</p>}
+            {error && <p>Error loading products.</p>}
+            {products && products.slice(0,5).map((product) => (
+                <ProductCard key={product.id} product={product}/>
+            ))}
           </div>
         </div>
         

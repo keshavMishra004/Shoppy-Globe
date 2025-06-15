@@ -19,7 +19,8 @@ const cartSlice = createSlice({
             } else{
                 state.products.push({
                     id: newItem.id,
-                    price: newItem.name,
+                    // Use title if available, fallback to name
+                    name: newItem.title || newItem.name,
                     price: newItem.price,
                     quantity: 1,
                     totalPrice: newItem.price,
