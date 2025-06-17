@@ -9,16 +9,16 @@ import { useState } from 'react'
 
 const Navbar = () => {
     const products = useSelector(state => state.cart.products)
-    const [searchTerm, setSearchTerm] = useState();
+    const [searchTerm, setSearchTerm] = useState("");
     const dispatch = useDispatch();
-    const navigate = useNavigate()
+    const navigate = useNavigate();
 
     const handleSearch = (e) => {
         e.preventDefault();
-        // Implement search functionality here
-        dispatch(setSearchTerm(searchTerm));
+        if (!searchTerm?.trim()) return;
+        // Pass searchTerm to Shop via URL query param
+        navigate(`/shop?search=${encodeURIComponent(searchTerm)}`);
         setSearchTerm("");
-        navigate("/filter-data");
     }
   return (
     <nav className='bg-white shadow-md'>
@@ -27,9 +27,20 @@ const Navbar = () => {
                 <Link to="/">Shoppy Globe</Link>
             </div>
             <div className='relative flex-1 mx-4' >
-                <form onSubmit={handleSearch} >
-                    <input type="text" placeholder='Search Product' className='w-full border py-2 px-4' onChange={(e)=> setSearchTerm(e.target.value)}/>
-                    <FaSearch className='absolute top-3 right-3 text-red-500'></FaSearch>
+                <form onSubmit={handleSearch} className="flex">
+                    <input
+                        type="text"
+                        placeholder='Search Product'
+                        className='w-full border py-2 px-4'
+                        value={searchTerm}
+                        onChange={(e)=> setSearchTerm(e.target.value)}
+                    />
+                    <button
+                        type="submit"
+                        className="bg-red-600 text-white px-4 py-2 ml-2 rounded hover:bg-red-700 flex items-center"
+                    >
+                        <FaSearch className='mr-1'/> Search
+                    </button>
                 </form>
             </div>
             <div className='flex items-center space-x-4'>

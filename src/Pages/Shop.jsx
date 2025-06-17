@@ -23,21 +23,40 @@
 
 // export default Shop;
 // Example usage in d:\Shoppy-Globe\src\Pages\Shop.jsx
-import React, { useState } from "react";
+import React, { useState, useMemo } from "react";
 import useFetch from "../hooks/useFetch";
 import CategorySection from "../Components/CategorySection";
+import ProductCard from "../Components/ProductCard";
+import { useLocation } from "react-router-dom";
 
 const Shop = () => {
   const { data: products, loading, error } = useFetch("https://fakestoreapi.com/products");
   const [selectedCategory, setSelectedCategory] = useState(null);
+  const location = useLocation();
 
-  const filteredProducts = selectedCategory
-    ? products?.filter(
+  // Get search value from URL query param
+  const searchParams = new URLSearchParams(location.search);
+  const searchValue = searchParams.get("search")?.toLowerCase() || "";
+
+  // Filtering logic: search takes precedence over category
+  const filteredProducts = useMemo(() => {
+    if (!products) return [];
+    if (searchValue) {
+      return products.filter(
+        (product) =>
+          (product.title || product.name || "")
+            .toLowerCase()
+            .includes(searchValue)
+      );
+    } else if (selectedCategory) {
+      return products.filter(
         (product) =>
           product.category &&
           product.category.toLowerCase() === selectedCategory.toLowerCase()
-      )
-    : products;
+      );
+    }
+    return products;
+  }, [products, searchValue, selectedCategory]);
 
   return (
     <div>
@@ -45,19 +64,14 @@ const Shop = () => {
       <div className="container mx-auto px-4 py-8">
         {loading && <p>Loading...</p>}
         {error && <p className="text-red-600">{error}</p>}
-        <div className="grid grid-cols-1 sm:grid-rows-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-          {filteredProducts &&
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+          {filteredProducts && filteredProducts.length > 0 ? (
             filteredProducts.map((product) => (
-              <div key={product.id} className="border rounded p-4">
-                <img
-                  src={product.image}
-                  alt={product.title}
-                  className="h-40 w-full object-contain mb-2"
-                />
-                <h3 className="font-bold">{product.title}</h3>
-                <p>₹{product.price}</p>
-              </div>
-            ))}
+              <ProductCard key={product.id} product={product} />
+            ))
+          ) : (
+            <p className="col-span-full text-center">No products found.</p>
+          )}
         </div>
       </div>
     </div>
