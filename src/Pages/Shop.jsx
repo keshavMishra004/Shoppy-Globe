@@ -34,7 +34,7 @@ const Shop = () => {
   const location = useLocation();
   const navigate = useNavigate();
 
-  // Get search value from URL query param
+  // Getting search value from URL query param
   const searchParams = new URLSearchParams(location.search);
   const searchValue = searchParams.get("search")?.toLowerCase() || "";
   const [selectedCategory, setSelectedCategory] = useState(null);

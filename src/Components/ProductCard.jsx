@@ -51,7 +51,7 @@ const ProductCard = ({ product }) => {
 
   return (
     <div className='bg-white p-4 shadow rounded relative border transform transition-transform duration-300 hover:scale-105 grid-cols-1'>
-      <Link to=""> <img
+      <Link to={`/product/${product.id}`}> <img
         src={product.image}
         alt={product.title || product.name}
         className='w-full h-40 sm:h-48 md:h-52 lg:h-56 object-contain mb-4'
