@@ -27,32 +27,39 @@ import React, { useState, useMemo } from "react";
 import useFetch from "../hooks/useFetch";
 import CategorySection from "../Components/CategorySection";
 import ProductCard from "../Components/ProductCard";
-import { useLocation } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 
 const Shop = () => {
   const { data: products, loading, error } = useFetch("https://fakestoreapi.com/products");
-  const [selectedCategory, setSelectedCategory] = useState(null);
   const location = useLocation();
+  const navigate = useNavigate();
 
   // Get search value from URL query param
   const searchParams = new URLSearchParams(location.search);
   const searchValue = searchParams.get("search")?.toLowerCase() || "";
+  const [selectedCategory, setSelectedCategory] = useState(null);
 
-  // Filtering logic: search takes precedence over category
+  // When a category is clicked, clear search and update URL
+  const handleCategoryClick = (category) => {
+    setSelectedCategory(category);
+    navigate("/shop"); // Remove search param from URL
+  };
+
+  // Filtering logic: category takes precedence over search
   const filteredProducts = useMemo(() => {
     if (!products) return [];
-    if (searchValue) {
+    if (selectedCategory) {
+      return products.filter(
+        (product) =>
+          product.category &&
+          product.category.toLowerCase() === selectedCategory.toLowerCase()
+      );
+    } else if (searchValue) {
       return products.filter(
         (product) =>
           (product.title || product.name || "")
             .toLowerCase()
             .includes(searchValue)
-      );
-    } else if (selectedCategory) {
-      return products.filter(
-        (product) =>
-          product.category &&
-          product.category.toLowerCase() === selectedCategory.toLowerCase()
       );
     }
     return products;
@@ -60,7 +67,7 @@ const Shop = () => {
 
   return (
     <div>
-      <CategorySection onCategoryClick={setSelectedCategory} />
+      <CategorySection onCategoryClick={handleCategoryClick} />
       <div className="container mx-auto px-4 py-8">
         {loading && <p>Loading...</p>}
         {error && <p className="text-red-600">{error}</p>}

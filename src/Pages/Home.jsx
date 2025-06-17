@@ -45,7 +45,6 @@ const Home = () => {
             </div>
         </div>
         <InfoSection/>
-        <CategorySection/>
 
         <div className='container mx-auto py-12'>
           <h2 className='text-2xl font-bold mb-6 text-center'>Top Products</h2>
