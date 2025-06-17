@@ -39,9 +39,9 @@ const Cart = () => {
                             <div className='flex space-x-12 items-center'>
                                 <p>₹{product.price}</p>
                                 <div className='flex items-center justify-center border'>
-                                    <button className='text-xl font-bold px-1.5 border-r'>-</button>
+                                    <button onClick={() => dispatch(decreaseQuantity(product.id))} className='text-xl font-bold px-1.5 border-r'>-</button>
                                     <p className='text-xl px-2'>{product.quantity}</p>
-                                    <button className='text-xl px-1 border-l'>+</button>
+                                    <button onClick={() => dispatch(increaseQuantity(product.id))} className='text-xl px-1 border-l'>+</button>
                                 </div>
                                 <p>₹{(product.quantity * product.price).toFixed(2)}</p>
                                 <button onClick={() => dispatch(removeFromCart(product.id))} className='text-red-500 hover:text-red-700'>

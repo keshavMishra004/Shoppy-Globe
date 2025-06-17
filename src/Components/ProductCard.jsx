@@ -36,6 +36,8 @@ import React from 'react'
 import { FaStar } from 'react-icons/fa'
 import { addToCart } from '../Redux/cartSlice'
 import { useDispatch } from 'react-redux'
+import { Link } from 'react-router-dom'
+
 
 const ProductCard = ({ product }) => {
   const dispatch = useDispatch()
@@ -49,11 +51,12 @@ const ProductCard = ({ product }) => {
 
   return (
     <div className='bg-white p-4 shadow rounded relative border transform transition-transform duration-300 hover:scale-105 grid-cols-1'>
-      <img
+      <Link to=""> <img
         src={product.image}
         alt={product.title || product.name}
         className='w-full h-40 sm:h-48 md:h-52 lg:h-56 object-contain mb-4'
       />
+      </Link> 
 
       <h3 className='text-base sm:text-lg font-semibold line-clamp-2'>
         {product.title || product.name}
