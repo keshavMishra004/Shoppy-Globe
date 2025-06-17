@@ -13,6 +13,8 @@ const initialState = {
     products: [],
     status: "idle", // idle | loading | succeeded | failed
     error: null,
+    searchTerm: "",
+    filteredData: [],
 };
 
 const productSlice = createSlice({
@@ -21,6 +23,16 @@ const productSlice = createSlice({
     reducers: {
         setProducts(state, action){
             state.products = action.payload
+        },
+        setSearchTerm(state, action) {  
+            state.searchTerm = action.payload;
+            if (state.searchTerm) {
+                state.filteredData = state.products.filter((product) =>
+                    product.title.toLowerCase().includes(state.searchTerm.toLowerCase())
+                );
+            } else {
+                state.filteredData = [];
+            }
         }
     },
     extraReducers: (builder) => {
@@ -39,6 +51,6 @@ const productSlice = createSlice({
     },
 })
 
-export const {setProducts} = productSlice.actions;
+export const {setProducts, setSearchTerm} = productSlice.actions;
 
-export default productSlice.reducer
+export default productSlice.reducer 

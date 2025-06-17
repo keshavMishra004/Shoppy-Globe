@@ -1,11 +1,25 @@
 import React from 'react'
-import { Link } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 import { FaShoppingCart, FaSearch, FaUser } from 'react-icons/fa'
-import { useSelector } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
+import { setSearchTerm } from '../Redux/productSlice'
+import { useState } from 'react'
+
 
 
 const Navbar = () => {
     const products = useSelector(state => state.cart.products)
+    const [searchTerm, setSearchTerm] = useState();
+    const dispatch = useDispatch();
+    const navigate = useNavigate()
+
+    const handleSearch = (e) => {
+        e.preventDefault();
+        // Implement search functionality here
+        dispatch(setSearchTerm(searchTerm));
+        setSearchTerm("");
+        navigate("/filter-data");
+    }
   return (
     <nav className='bg-white shadow-md'>
         <div className='container mx-auto px-4 md:px-16 lg:px-24 py-4 flex justify-between items-center'>
@@ -13,8 +27,8 @@ const Navbar = () => {
                 <Link to="/">Shoppy Globe</Link>
             </div>
             <div className='relative flex-1 mx-4' >
-                <form >
-                    <input type="text" placeholder='Search Product' className='w-full border py-2 px-4'/>
+                <form onSubmit={handleSearch} >
+                    <input type="text" placeholder='Search Product' className='w-full border py-2 px-4' onChange={(e)=> setSearchTerm(e.target.value)}/>
                     <FaSearch className='absolute top-3 right-3 text-red-500'></FaSearch>
                 </form>
             </div>
